@@ -28,6 +28,7 @@ public final class R {
         public static final int icon_family_tab=0x7f020004;
         public static final int icon_qr_tab=0x7f020005;
         public static final int qr=0x7f020006;
+        public static final int zx_logo=0x7f020007;
     }
     public static final class id {
         public static final int ScanButton=0x7f08000a;

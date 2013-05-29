@@ -1,9 +1,5 @@
 package com.zhenxin.medicine.reminder;
 
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -11,8 +7,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.PowerManager;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 /**
@@ -26,14 +22,32 @@ import android.widget.Toast;
  */
 public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	
-	private String medicineName;
-	private boolean weeklyMedicine;
-	private int dailyFrequency;
-	private int numPills;
+	public static final String MEDICINE_NAME_KEY = "MEDICINE_NAME";
+	public static final String DAILY_FREQUENCY_KEY = "DAILY_FREQUENCY";
+	public static final String NUM_PILLS_KEY = "NUM_PILLS";
+	
+	private static String medicineName;
+	private static boolean dailyFrequency;
+	private static int numPills;
 
 	final public static String ONE_TIME = "onetime";
+	
+	public AlarmManagerBroadcastReceiver ()	{
+		super();
+	}
+	
+	public AlarmManagerBroadcastReceiver (String medicineName, 
+			boolean dailyFrequency, int numPills)	{
+		super();
+		AlarmManagerBroadcastReceiver.medicineName = medicineName;
+		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
+		AlarmManagerBroadcastReceiver.numPills = numPills;
+	}
+	
 	@Override
 	public void onReceive(Context context, Intent intent) {
+		// When this method is completed, the instance is deleted.
+		// Need to reinitialize every time.
 		PowerManager pm = (PowerManager) context
 				.getSystemService(Context.POWER_SERVICE);
 		PowerManager.WakeLock wl = pm.newWakeLock(
@@ -41,29 +55,13 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		// Acquire the lock
 		wl.acquire();
 
-		// You can do the processing here update the widget/remote views.
-		Bundle extras = intent.getExtras();
-		StringBuilder msgStr = new StringBuilder();
+		Toast.makeText(context, "Alarm is going!", Toast.LENGTH_LONG).show();
 
-		if (extras != null && extras.getBoolean(ONE_TIME, Boolean.FALSE)) {
-			msgStr.append("One time Timer : ");
-		}
-		Format formatter = new SimpleDateFormat("hh:mm:ss a");
-		msgStr.append(formatter.format(new Date()));
-
-		Toast.makeText(context, msgStr, Toast.LENGTH_LONG).show();
-
-        //Now insert the notification
- 		/* Take this out for now; we can use this to customize the message
- 		// Before sending intent to pending intent, add property of text first
- 		EditText editText = (EditText) findViewById(R.id.edit_message);
- 		String message = editText.getText().toString();
- 		intent.putExtra(EXTRA_MESSAGE, message);
- 		//this.startActivity(intent);
- 		*/
-		
 		// Must wire intent between notification activity and this
 		Intent intent2 = new Intent(context, NotificationActivity.class);
+		intent2.putExtra(MEDICINE_NAME_KEY, medicineName);
+		intent2.putExtra(DAILY_FREQUENCY_KEY, dailyFrequency);
+		intent2.putExtra(NUM_PILLS_KEY, numPills);
 		
  		// Now create pending intent
  		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent2, 0);
@@ -71,13 +69,15 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
  		// Build notification
  		// Actions are just fake
  		// For this, don't forget to set sounds, lights, vibration, etc.
- 		Notification noti = new Notification.Builder(context)
+ 		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+ 		builder.setContentIntent(pIntent)
  				.setTicker("Medicine Reminder!")
- 		        .setContentTitle(medicineName)
- 		        .setContentText(medicineName)
- 		        .setSmallIcon(R.drawable.ic_launcher)	// should change Icon
- 		        .setContentIntent(pIntent).getNotification();
- 		    
+ 				.setContentTitle(AlarmManagerBroadcastReceiver.medicineName)
+ 				.setContentText("Take your pills!")
+ 				.setSmallIcon(R.drawable.alarm);
+ 		
+ 		Notification noti = builder.getNotification();
+ 		
  		NotificationManager notificationManager = 
  		  (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -90,9 +90,7 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
          
          //Release the lock
          wl.release();
-         
-         // How to manage pending intent from clicking NotificationActivity?
-         
+                  
 	}
 	public void SetAlarm(Context context)
     {
@@ -119,16 +117,10 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	public void setMedicineName(String medicineName) {
 		this.medicineName = medicineName;
 	}
-	public boolean isWeeklyMedicine() {
-		return weeklyMedicine;
-	}
-	public void setWeeklyMedicine(boolean weeklyMedicine) {
-		this.weeklyMedicine = weeklyMedicine;
-	}
-	public int getDailyFrequency() {
+	public boolean getDailyFrequency() {
 		return dailyFrequency;
 	}
-	public void setDailyFrequency(int dailyFrequency) {
+	public void setDailyFrequency(boolean dailyFrequency) {
 		this.dailyFrequency = dailyFrequency;
 	}
 	public int getNumPills() {

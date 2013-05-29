@@ -17,6 +17,7 @@ public class AlarmManagerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_manager);
         alarm = new AlarmManagerBroadcastReceiver();
+
     }
     
     @Override
@@ -27,18 +28,16 @@ public class AlarmManagerActivity extends Activity {
     public void startRepeatingTimer(View view) {
     	Context context = this.getApplicationContext();
     	if(alarm != null){
-    		alarm.SetAlarm(context);
     		// Set complementary properties
             EditText medicineName = (EditText) findViewById(R.id.medicine_name);
             alarm.setMedicineName(medicineName.getText().toString());
-            //CheckBox isDaily = (CheckBox) findViewById(R.id.num_pills_check);
+            CheckBox isDaily = (CheckBox) findViewById(R.id.daily_weekly_check);
             // Different convention, pretty bad...should switch this around
-            //alarm.setWeeklyMedicine(!isDaily.isChecked());
-            alarm.setWeeklyMedicine(true);
-            EditText dailyFrequency = (EditText) findViewById(R.id.num_pills_check);
-            alarm.setDailyFrequency(Integer.parseInt(dailyFrequency.getText().toString()));
+            alarm.setDailyFrequency(isDaily.isChecked());
             EditText numPills = (EditText) findViewById(R.id.num_pills_check);
             alarm.setNumPills(Integer.parseInt(numPills.getText().toString()));
+            
+    		alarm.SetAlarm(context);
             
     	}else{
     		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
