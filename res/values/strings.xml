@@ -10,5 +10,7 @@
     <string name="medicine_name_hint">Medicine Name</string>
     <string name="medicine_daily_check_text">Taken Daily?</string>
     <string name="num_pills">How many pills are taken per instance?</string>
-    
+    <string name="title_activity_main">MainActivity</string>
+    <string name="hello_world">Hello world!</string>
+
 </resources>

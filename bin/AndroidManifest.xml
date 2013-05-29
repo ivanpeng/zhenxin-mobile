@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="10"
         android:targetSdkVersion="17" />
     <!-- Permissions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -16,11 +16,11 @@
         <activity
             android:name="com.zhenxin.medicine.reminder.AlarmManagerActivity"
             android:label="@string/title_activity_notification" >
-            <intent-filter>
+             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            </intent-filter> -
         </activity>
         <!-- Broadcast receiver -->
         <receiver android:name="com.zhenxin.medicine.reminder.AlarmManagerBroadcastReceiver" >
@@ -30,6 +30,21 @@
             android:name="com.zhenxin.medicine.reminder.NotificationActivity"
             android:label="@string/title_activity_notification" >
         </activity>
+        <activity
+            android:name="com.zhenxin.medicine.reminder.MainActivity"
+            android:label="@string/title_activity_main" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".AlarmListActivity" />
+        
+        <activity android:name=".ScannerActivity" />
+        
+        <activity android:name=".SocialActivity" />
     </application>
 
 </manifest>
