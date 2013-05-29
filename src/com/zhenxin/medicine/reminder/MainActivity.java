@@ -26,13 +26,13 @@ public class MainActivity extends TabActivity {
         TabSpec qrspec = tabHost.newTabSpec("Scan");
         // setting Title and Icon for the Tab
         qrspec.setIndicator("", getResources().getDrawable(R.drawable.icon_qr_tab));
-        Intent qrIntent = new Intent(this, AlarmListActivity.class);
-        qrspec.setContent(qrIntent);
+        //Intent qrIntent = new Intent(this, ScannerActivity.class); // real goddamn slow right now, so disable
+        //qrspec.setContent(qrIntent); 
 		
         TabSpec familyspec = tabHost.newTabSpec("Social");
         // setting Title and Icon for the Tab
         familyspec.setIndicator("", getResources().getDrawable(R.drawable.icon_family_tab));
-        Intent familyIntent = new Intent(this, AlarmListActivity.class);
+        Intent familyIntent = new Intent(this, SocialActivity.class);
         familyspec.setContent(familyIntent);
 		
         tabHost.addTab(alarmspec); // Adding photos tab

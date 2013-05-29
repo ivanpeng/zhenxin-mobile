@@ -1,8 +1,12 @@
-package com.zhenxin.medicine.reminder;
+/*
+ * Basic no frills app which integrates the ZBar barcode scanner with
+ * the camera.
+ * 
+ * Created by lisah0 on 2012-02-24
+ */
+package net.sourceforge.zbar.android.CameraTest;
 
-import android.app.Activity;
-import android.os.Bundle;
- 
+import net.sourceforge.zbar.android.CameraTest.CameraPreview;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -32,7 +36,7 @@ import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 import net.sourceforge.zbar.Config;
 
-public class ScannerActivity extends Activity
+public class CameraTestActivity extends Activity
 {
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -53,8 +57,8 @@ public class ScannerActivity extends Activity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.scanner_layout);
-        
+        setContentView(R.layout.main);
+
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         autoFocusHandler = new Handler();
