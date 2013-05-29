@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical"
+    android:paddingTop="5dip"
+    android:paddingBottom="5dip">
+
+    <EditText android:id="@+id/medicine_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/medicine_name_hint" />
+    
+    <TextView android:id="@+id/daily_weekly_check_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:text="@string/medicine_daily_check_text"/>
+    
+    <CheckBox android:id="@+id/daily_weekly_check"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" />
+    
+    <TextView android:id="@+id/num_pills_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+
+        android:text="@string/num_pills"/>
+    
+    <EditText android:id="@+id/num_pills_check"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content" 
+        android:layout_gravity="right"
+        android:inputType="numberSigned"/>
+    
+    <Button
+        android:id="@+id/btStart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btStart"
+        android:onClick="startRepeatingTimer"
+        tools:context=".WidgetAlarmManagerActivity" />
+    <Button
+        android:id="@+id/btCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btCancel"
+        android:onClick="cancelRepeatingTimer"
+        tools:context=".WidgetAlarmManagerActivity" />
+
+</LinearLayout>
