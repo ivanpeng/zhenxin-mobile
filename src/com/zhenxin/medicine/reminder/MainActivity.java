@@ -26,8 +26,9 @@ public class MainActivity extends TabActivity {
         TabSpec qrspec = tabHost.newTabSpec("Scan");
         // setting Title and Icon for the Tab
         qrspec.setIndicator("", getResources().getDrawable(R.drawable.icon_qr_tab));
-        //Intent qrIntent = new Intent(this, ScannerActivity.class); // real goddamn slow right now, so disable
+        //Intent qrIntent = new Intent(this, ScannerActivity.class); // real goddamn slow right now, so disable.
         //qrspec.setContent(qrIntent); 
+        qrspec.setContent(alarmIntent); // disable alarm list for now
 		
         TabSpec familyspec = tabHost.newTabSpec("Social");
         // setting Title and Icon for the Tab
