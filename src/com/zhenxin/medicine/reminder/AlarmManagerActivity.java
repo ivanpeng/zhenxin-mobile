@@ -2,10 +2,10 @@ package com.zhenxin.medicine.reminder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -17,6 +17,17 @@ public class AlarmManagerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_manager);
         alarm = new AlarmManagerBroadcastReceiver();
+        // If this was started from clicking bottom, update the editText field 
+        Intent intent = this.getIntent();
+        // if there is a value
+        if (intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY) != null)	{
+        	String medicineName = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY);
+        	// now put it in the content view
+        	EditText editText = (EditText) findViewById(R.id.medicine_name);
+        	editText.setText(medicineName);
+        }
+        
+        	
 
     }
     
@@ -31,9 +42,11 @@ public class AlarmManagerActivity extends Activity {
     		// Set complementary properties
             EditText medicineName = (EditText) findViewById(R.id.medicine_name);
             alarm.setMedicineName(medicineName.getText().toString());
-            CheckBox isDaily = (CheckBox) findViewById(R.id.daily_weekly_check);
+            EditText pillFrequency = (EditText) findViewById(R.id.pill_frequency);
+            alarm.setPillFrequency(Integer.parseInt(pillFrequency.getText().toString()));
+            //CheckBox isDaily = (CheckBox) findViewById(R.id.daily_weekly_check);
             // Different convention, pretty bad...should switch this around
-            alarm.setDailyFrequency(isDaily.isChecked());
+            //alarm.setDailyFrequency(isDaily.isChecked());
             EditText numPills = (EditText) findViewById(R.id.num_pills_check);
             alarm.setNumPills(Integer.parseInt(numPills.getText().toString()));
             
@@ -52,16 +65,6 @@ public class AlarmManagerActivity extends Activity {
     		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
     	}
     }
-    /*
-    public void onetimeTimer(View view){
-    	Context context = this.getApplicationContext();
-    	if(alarm != null){
-    		alarm.setOnetimeTimer(context);
-    	}else{
-    		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
-    	}
-    }
-    */
     
 	@Override
     public boolean onCreateOptionsMenu(Menu menu) {

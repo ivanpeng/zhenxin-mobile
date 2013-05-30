@@ -10,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/medicine_name_hint" />
-    
+    <!--
     <TextView android:id="@+id/daily_weekly_check_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -21,6 +21,17 @@
         android:layout_width="50dp"
         android:layout_height="wrap_content"
         android:layout_gravity="right" />
+    -->
+    <TextView android:id="@+id/pill_frequency_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/pill_frequency_text" />
+    
+    <EditText android:id="@+id/pill_frequency"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:inputType="numberSigned" />
     
     <TextView android:id="@+id/num_pills_text"
         android:layout_width="fill_parent"
@@ -29,7 +40,7 @@
         android:text="@string/num_pills"/>
     
     <EditText android:id="@+id/num_pills_check"
-        android:layout_width="150dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content" 
         android:layout_gravity="right"
         android:inputType="numberSigned"/>

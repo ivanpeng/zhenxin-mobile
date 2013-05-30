@@ -21,6 +21,9 @@ public class AlarmListActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
     	// TODO: need to handle list item clicks, now it just all points to alarm manager
     	Intent intent = new Intent(this, AlarmManagerActivity.class);
+    	ListAdapter adapter = getListAdapter();
+    	String medicineName = (String) adapter.getItem(position);
+    	intent.putExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY, medicineName);
     	startActivity(intent);
     }
     protected ListAdapter createAdapter()

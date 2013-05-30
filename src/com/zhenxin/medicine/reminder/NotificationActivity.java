@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class NotificationActivity extends Activity {
@@ -12,17 +14,29 @@ public class NotificationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_notification);
+		TextView textView = (TextView) findViewById(R.id.textview1);
 		//TODO: Set text View with the customized message here!
 		Intent intent = getIntent();
 		String medicineName = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY);
-		boolean dailyFrequency = intent.getBooleanExtra(AlarmManagerBroadcastReceiver.DAILY_FREQUENCY_KEY, true);
+		int pillFrequency = intent.getIntExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY, 1);
 		int numPills = intent.getIntExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, 0);
 		
 		String text = "You have a reminder set to take " + medicineName + 
-				" twice per day. Take " + numPills + " now!"; 
-		TextView textView = new TextView(this);
+				" " + pillFrequency + " times per day. Take " + numPills + " now!";
+		
 		textView.setText(text);
-		setContentView(textView);
+		
+		// Now insert button to return to main options
+		Button returnbutton = (Button) findViewById(R.id.returnbutton);
+		returnbutton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				setContentView(R.layout.activity_main);
+			}
+			
+		});
 		
 	}
 

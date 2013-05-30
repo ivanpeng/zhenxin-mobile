@@ -24,9 +24,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	
 	public static final String MEDICINE_NAME_KEY = "MEDICINE_NAME";
 	public static final String DAILY_FREQUENCY_KEY = "DAILY_FREQUENCY";
+	public static final String PILL_FREQUENCY_KEY = "PILL_FREQUENCY";
 	public static final String NUM_PILLS_KEY = "NUM_PILLS";
 	
 	private static String medicineName;
+	private static int pillFrequency;
 	private static boolean dailyFrequency;
 	private static int numPills;
 
@@ -36,10 +38,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		super();
 	}
 	
-	public AlarmManagerBroadcastReceiver (String medicineName, 
+	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
 			boolean dailyFrequency, int numPills)	{
 		super();
 		AlarmManagerBroadcastReceiver.medicineName = medicineName;
+		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
 		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
 		AlarmManagerBroadcastReceiver.numPills = numPills;
 	}
@@ -100,6 +103,7 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
         //After after 30 seconds
         //TODO: Do the frequency processing here
+        // When we have the dialog input here, modify this.
         am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5 , pi); 
     }
 
@@ -115,19 +119,27 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		return medicineName;
 	}
 	public void setMedicineName(String medicineName) {
-		this.medicineName = medicineName;
+		AlarmManagerBroadcastReceiver.medicineName = medicineName;
 	}
 	public boolean getDailyFrequency() {
 		return dailyFrequency;
 	}
 	public void setDailyFrequency(boolean dailyFrequency) {
-		this.dailyFrequency = dailyFrequency;
+		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
 	}
 	public int getNumPills() {
 		return numPills;
 	}
 	public void setNumPills(int numPills) {
-		this.numPills = numPills;
+		AlarmManagerBroadcastReceiver.numPills = numPills;
+	}
+
+	public static int getPillFrequency() {
+		return pillFrequency;
+	}
+
+	public void setPillFrequency(int pillFrequency) {
+		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
 	}
 
 }
