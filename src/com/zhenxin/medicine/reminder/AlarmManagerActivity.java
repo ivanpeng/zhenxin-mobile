@@ -1,17 +1,27 @@
 package com.zhenxin.medicine.reminder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ListAdapter;
 import android.widget.Toast;
-
+/**
+ * This view opens up the editing window for one specific instance of an alarm.
+ * @author Ivan
+ *
+ */
 public class AlarmManagerActivity extends Activity {
 
 	private AlarmManagerBroadcastReceiver alarm;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,7 +36,18 @@ public class AlarmManagerActivity extends Activity {
         	EditText editText = (EditText) findViewById(R.id.medicine_name);
         	editText.setText(medicineName);
         }
-        
+        if (intent.getStringExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY) != null)	{
+        	String pillFrequency = intent.getStringExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY);
+        	// now put it in the content view
+        	EditText editText = (EditText) findViewById(R.id.pill_frequency);
+        	editText.setText(pillFrequency);
+        }
+        if (intent.getStringExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY) != null)	{
+        	String numPills = intent.getStringExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY);
+        	// now put it in the content view
+        	EditText editText = (EditText) findViewById(R.id.num_pills_check);
+        	editText.setText(numPills);
+        }
         	
 
     }
@@ -44,9 +65,6 @@ public class AlarmManagerActivity extends Activity {
             alarm.setMedicineName(medicineName.getText().toString());
             EditText pillFrequency = (EditText) findViewById(R.id.pill_frequency);
             alarm.setPillFrequency(Integer.parseInt(pillFrequency.getText().toString()));
-            //CheckBox isDaily = (CheckBox) findViewById(R.id.daily_weekly_check);
-            // Different convention, pretty bad...should switch this around
-            //alarm.setDailyFrequency(isDaily.isChecked());
             EditText numPills = (EditText) findViewById(R.id.num_pills_check);
             alarm.setNumPills(Integer.parseInt(numPills.getText().toString()));
             

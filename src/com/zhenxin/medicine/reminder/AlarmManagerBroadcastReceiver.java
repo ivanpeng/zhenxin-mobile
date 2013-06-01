@@ -31,11 +31,14 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	private static int pillFrequency;
 	private static boolean dailyFrequency;
 	private static int numPills;
+	private static int defaultStartTime;
 
 	final public static String ONE_TIME = "onetime";
 	
 	public AlarmManagerBroadcastReceiver ()	{
 		super();
+		AlarmManagerBroadcastReceiver.defaultStartTime = 8;
+
 	}
 	
 	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
@@ -45,7 +48,19 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
 		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
 		AlarmManagerBroadcastReceiver.numPills = numPills;
+		AlarmManagerBroadcastReceiver.defaultStartTime = 8;
 	}
+	
+	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
+			boolean dailyFrequency, int numPills, int defaultStartTime)	{
+		super();
+		AlarmManagerBroadcastReceiver.medicineName = medicineName;
+		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
+		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
+		AlarmManagerBroadcastReceiver.numPills = numPills;
+		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
+	}
+	
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
@@ -95,22 +110,32 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
          wl.release();
                   
 	}
-	public void SetAlarm(Context context)
+	/**
+	 * This function sets the alarm based off of a flag with an indicator
+	 * @param context
+	 * @param whichAlarm
+	 */
+	public void SetAlarm(Context context, int whichAlarm)
     {
         AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         intent.putExtra(ONE_TIME, Boolean.FALSE);
-        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent pi = PendingIntent.getBroadcast(context, whichAlarm, intent, 0);
         //After after 30 seconds
         //TODO: Do the frequency processing here
         // When we have the dialog input here, modify this.
         am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5 , pi); 
     }
 
-    public void CancelAlarm(Context context)
+	/**
+	 * This function cancels the selected alarm
+	 * @param context
+	 * @param whichAlarm
+	 */
+    public void CancelAlarm(Context context, int whichAlarm)
     {
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
-        PendingIntent sender = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent sender = PendingIntent.getBroadcast(context, whichAlarm, intent, 0);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
     }
@@ -134,12 +159,22 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		AlarmManagerBroadcastReceiver.numPills = numPills;
 	}
 
-	public static int getPillFrequency() {
+	public int getPillFrequency() {
 		return pillFrequency;
 	}
 
 	public void setPillFrequency(int pillFrequency) {
 		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
 	}
+
+	public int getDefaultStartTime() {
+		return defaultStartTime;
+	}
+
+	public void setDefaultStartTime(int defaultStartTime) {
+		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
+	}
+
+	
 
 }

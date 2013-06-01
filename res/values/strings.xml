@@ -14,5 +14,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="pill_frequency_text">How many times per day are you taking this pill?</string>
     <string name="alarm_return_text">Return</string>
+    <string name="title_activity_alarm_view">AlarmViewActivity</string>
 
 </resources>
