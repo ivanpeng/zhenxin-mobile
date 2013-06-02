@@ -27,15 +27,22 @@ public class AlarmListActivity extends ListActivity {
     	ListAdapter adapter = getListAdapter();
     	// Send over extra properties to the view class
     	String medicineName = (String) adapter.getItem(position);
-    	AlarmManagerBroadcastReceiver alarm = getAlarmByPosition(position);
+    	//AlarmManagerBroadcastReceiver alarm = getAlarmByPosition(position);
     	// Now that we have alarm instance, populate the intent with its properties
     	intent.putExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY, medicineName);
-    	intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, alarm.getNumPills());
+    	
+    	//intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, alarm.getNumPills());
+    	int pillFrequency = 2;
+    	intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, pillFrequency);
     	// Do a little bit of processing with the pill frequency
     	// Algorithm: 8am initial time, partition day into 12/(n) intervals
-    	String [] reminderTimes = new String[alarm.getPillFrequency()];
-    	int defaultStartTime = alarm.getDefaultStartTime();
-    	int interval = 12/reminderTimes.length;
+    	String [] reminderTimes = new String[pillFrequency];
+    	int defaultStartTime = 8;
+    	int interval;
+    	if (pillFrequency == 1)
+    		interval = 0;
+    	else
+    		interval = 12/(reminderTimes.length-1);
     	for (int i = 0; i < reminderTimes.length; i++)	{
     		int temp = defaultStartTime + i*interval;
     		reminderTimes[i] = temp + ":00";

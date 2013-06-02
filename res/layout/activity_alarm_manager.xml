@@ -36,7 +36,6 @@
     <TextView android:id="@+id/num_pills_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-
         android:text="@string/num_pills"/>
     
     <EditText android:id="@+id/num_pills_check"
@@ -44,6 +43,13 @@
         android:layout_height="wrap_content" 
         android:layout_gravity="right"
         android:inputType="numberSigned"/>
+    
+    <TextView android:id="@+id/start_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textColor="#A8A8A8" />
+        
     
     <Button
         android:id="@+id/btStart"

@@ -68,7 +68,7 @@ public class AlarmManagerActivity extends Activity {
             EditText numPills = (EditText) findViewById(R.id.num_pills_check);
             alarm.setNumPills(Integer.parseInt(numPills.getText().toString()));
             
-    		alarm.SetAlarm(context);
+    		alarm.SetAlarm(context,0);
             
     	}else{
     		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
@@ -78,7 +78,7 @@ public class AlarmManagerActivity extends Activity {
     public void cancelRepeatingTimer(View view){
     	Context context = this.getApplicationContext();
     	if(alarm != null){
-    		alarm.CancelAlarm(context);
+    		alarm.CancelAlarm(context,0);
     	}else{
     		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
     	}

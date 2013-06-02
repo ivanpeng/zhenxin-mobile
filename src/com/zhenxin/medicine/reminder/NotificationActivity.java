@@ -1,6 +1,7 @@
 package com.zhenxin.medicine.reminder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -33,7 +34,8 @@ public class NotificationActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				setContentView(R.layout.activity_main);
+				Context context = v.getContext();
+					((Activity)context).finish();
 			}
 			
 		});

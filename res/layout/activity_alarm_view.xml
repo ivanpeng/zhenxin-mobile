@@ -21,6 +21,11 @@
         android:layout_height="wrap_content"
         android:text="@string/hello_world" />
     
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/view_list_desc" />
+    
     <ListView
         android:id="@+id/view_alarm_times"
         android:layout_width="wrap_content"
@@ -29,9 +34,14 @@
     
     <Button
         android:id="@+id/view_edit_alarm"
-        android:layout_width="50dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:text="Edit" 
         android:onClick="editAlarmView"/>
+    <Button
+        android:id="@+id/view_cancel_alarm"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Cancel" />
 
 </LinearLayout>
