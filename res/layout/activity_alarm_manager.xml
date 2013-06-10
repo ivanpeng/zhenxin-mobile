@@ -10,18 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:hint="@string/medicine_name_hint" />
-    <!--
-    <TextView android:id="@+id/daily_weekly_check_text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
 
-        android:text="@string/medicine_daily_check_text"/>
-    
-    <CheckBox android:id="@+id/daily_weekly_check"
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right" />
-    -->
     <TextView android:id="@+id/pill_frequency_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -32,6 +21,27 @@
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:inputType="numberSigned" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_alarm_time_text"
+        android:layout_margin="25dp"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <Button
+        android:id="@+id/alarm_edit_default_time"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:text="@string/change_alarm_button_text" />
+    
+    <TextView android:id="@+id/pill_frequency_time_selector"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
     
     <TextView android:id="@+id/num_pills_text"
         android:layout_width="fill_parent"
@@ -43,13 +53,6 @@
         android:layout_height="wrap_content" 
         android:layout_gravity="right"
         android:inputType="numberSigned"/>
-    
-    <TextView android:id="@+id/start_time_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textColor="#A8A8A8" />
-        
     
     <Button
         android:id="@+id/btStart"
@@ -65,5 +68,11 @@
         android:text="@string/btCancel"
         android:onClick="cancelRepeatingTimer"
         tools:context=".WidgetAlarmManagerActivity" />
+    <Button
+        android:id="@+id/btEnd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btEnd"
+        android:onClick="onClickEnd" />
 
 </LinearLayout>

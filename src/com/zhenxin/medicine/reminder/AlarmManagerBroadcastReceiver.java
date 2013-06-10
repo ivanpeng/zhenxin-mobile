@@ -1,5 +1,7 @@
 package com.zhenxin.medicine.reminder;
 
+import java.util.Calendar;
+
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -32,6 +34,8 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	private static boolean dailyFrequency;
 	private static int numPills;
 	private static int defaultStartTime;
+	private static int timePickerHour;
+	private static int timePickerMinute;
 
 	final public static String ONE_TIME = "onetime";
 	
@@ -124,7 +128,19 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         //After after 30 seconds
         //TODO: Do the frequency processing here
         // When we have the dialog input here, modify this.
-        am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5 , pi); 
+        // First check if the time 
+        Calendar cal = Calendar.getInstance();
+        Calendar calAlarm = Calendar.getInstance();
+        // month, day, and year already set from this; 
+        calAlarm.set(Calendar.HOUR_OF_DAY, timePickerHour);
+        calAlarm.set(Calendar.MINUTE, timePickerMinute);
+        calAlarm.set(Calendar.SECOND, 0);
+        long triggerTime = System.currentTimeMillis() -  calAlarm.getTimeInMillis();
+        if (triggerTime > 0)
+        	// the time has already passed; set calAlarm for next day, and get repeating
+        	calAlarm.add(Calendar.DAY_OF_MONTH, 1);
+        am.setRepeating(AlarmManager.RTC_WAKEUP, calAlarm.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+        //am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5 , pi); 
     }
 
 	/**
@@ -173,6 +189,22 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
 	public void setDefaultStartTime(int defaultStartTime) {
 		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
+	}
+
+	public int getTimePickerHour() {
+		return timePickerHour;
+	}
+
+	public void setTimePickerHour(int timePickerHour) {
+		this.timePickerHour = timePickerHour;
+	}
+
+	public int getTimePickerMinute() {
+		return timePickerMinute;
+	}
+
+	public void setTimePickerMinute(int timePickerMinute) {
+		this.timePickerMinute = timePickerMinute;
 	}
 
 	

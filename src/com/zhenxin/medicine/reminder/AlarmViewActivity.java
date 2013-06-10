@@ -26,12 +26,12 @@ public class AlarmViewActivity extends Activity {
 		setContentView(R.layout.activity_alarm_view);
 		Intent intent = getIntent();
 		// Set medicine name
-		String text = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY).toString();
+		final String text = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY).toString();
 		TextView medicineNameView = (TextView) findViewById(R.id.view_medicine_name);	// or R.id.view_medicine_name
 		medicineNameView.setText("Drug Name: " + text);
 		
 		// Set number of pills per instance
-		int numPills = intent.getIntExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, 0);
+		final int numPills = intent.getIntExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, 0);
 		TextView numPillsView = (TextView) findViewById(R.id.view_num_pills);
 		// This is a tricky motherfucker! If you set text to just number, android will assume it's a resource ID. Remember for next time.
 		numPillsView.setText("For each instance, "+ numPills + " pills will be taken.");
@@ -48,7 +48,7 @@ public class AlarmViewActivity extends Activity {
 			beginTime += interval; 
 		}
 		*/
-		String[] timeList = intent.getStringArrayExtra(AlarmListActivity.TIME_LIST_KEY);
+		final String[] timeList = intent.getStringArrayExtra(AlarmListActivity.TIME_LIST_KEY);
 		if (timeList == null || timeList.length == 0)
 			Toast.makeText(this, "TimeList is null!", Toast.LENGTH_SHORT).show();
 		else	{
@@ -67,6 +67,10 @@ public class AlarmViewActivity extends Activity {
 				// jump into alarm Manager
 				Context context = view.getContext();
 				Intent intent = new Intent(context, AlarmManagerActivity.class);
+				intent.putExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY, text);
+				intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, numPills);
+				intent.putExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY,timeList.length);
+				// should send default time start as well
 				context.startActivity(intent);
 			}
 			

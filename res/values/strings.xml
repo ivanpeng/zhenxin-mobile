@@ -3,8 +3,9 @@
 
     <string name="app_name">MedicineReminder</string>
     <string name="action_settings">Settings</string>
-    <string name="btCancel">Cancel Repeating Timer</string>
-    <string name="btStart">Start Repeating Timer</string>
+    <string name="btCancel">Stop Alarm</string>
+    <string name="btStart">Start Alarm</string>
+    <string name="btEnd">Cancel</string>
     <string name="title_activity_notification">ZhenXin Alarm Reminder!</string>
     <string name="notification_string">You have been notified of an alarm!</string>
     <string name="medicine_name_hint">Medicine Name</string>
@@ -15,6 +16,8 @@
     <string name="pill_frequency_text">How many times per day are you taking this pill?</string>
     <string name="alarm_return_text">Return</string>
     <string name="view_list_desc">Reminders to take these pills will occur at these times:</string>
-    <string name="title_activity_alarm_view">AlarmViewActivity</string>
+    <string name="title_activity_alarm_view">Alarm View</string>
+    <string name="default_alarm_time_text">The alarm default time is set to 8 am. Press to change.</string>
+    <string name="change_alarm_button_text">Change Default Time</string>
 
 </resources>
