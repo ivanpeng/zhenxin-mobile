@@ -20,6 +20,11 @@ import android.widget.Toast;
  */
 public class AlarmViewActivity extends Activity {
 
+	private boolean resumeHasRun = false;
+	// We can declare an instance of this alarm; just don't call setAlarm here and we'll be fine
+	private AlarmManagerBroadcastReceiver alarm;
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -29,6 +34,7 @@ public class AlarmViewActivity extends Activity {
 		final String text = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY).toString();
 		TextView medicineNameView = (TextView) findViewById(R.id.view_medicine_name);	// or R.id.view_medicine_name
 		medicineNameView.setText("Drug Name: " + text);
+		medicineNameView.setTextSize(30);
 		
 		// Set number of pills per instance
 		final int numPills = intent.getIntExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, 0);
@@ -39,7 +45,6 @@ public class AlarmViewActivity extends Activity {
 		// Set alarm times of when it is active now
 		// This is a challenge because the AlarmManagerBroadcastReceiver needs to save instances of it.
 		List<String> timeList = new ArrayList<String>();
-		// TODO: process timeList
 		int pillFrequency = intent.getIntExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY, 1);
 		int beginTime = 8;	// need to grab from intent eventually
 		int interval = 12/pillFrequency;
@@ -48,7 +53,8 @@ public class AlarmViewActivity extends Activity {
 			beginTime += interval; 
 		}
 		*/
-		final String[] timeList = intent.getStringArrayExtra(AlarmListActivity.TIME_LIST_KEY);
+		
+		final String[] timeList = intent.getStringArrayExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY);
 		if (timeList == null || timeList.length == 0)
 			Toast.makeText(this, "TimeList is null!", Toast.LENGTH_SHORT).show();
 		else	{
@@ -56,6 +62,9 @@ public class AlarmViewActivity extends Activity {
 			ListView listView = (ListView) findViewById(R.id.view_alarm_times);
 			listView.setAdapter(listAdapter);
 		}
+		alarm = new AlarmManagerBroadcastReceiver(text, timeList.length, numPills, 8); // set to 8 for now, need to either set it in AlarmListActivity or parse from timeList
+		alarm.setTimeList(timeList);
+		
 		
 		// Now set functionality to the buttons.
 		// If edit is pressed, then wire intent to AlarmManager, and start activity
@@ -70,6 +79,7 @@ public class AlarmViewActivity extends Activity {
 				intent.putExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY, text);
 				intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, numPills);
 				intent.putExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY,timeList.length);
+				intent.putExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY, timeList);
 				// should send default time start as well
 				context.startActivity(intent);
 			}
@@ -94,6 +104,32 @@ public class AlarmViewActivity extends Activity {
 		getMenuInflater().inflate(R.menu.alarm_view, menu);
 		return true;
 	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	    if (!resumeHasRun) {
+	        resumeHasRun = true;
+	        return;
+	    }
+	    else	{
+			TextView numPillsView = (TextView) findViewById(R.id.view_num_pills);
+			int numPills = alarm.getNumPills();
+			numPillsView.setText("For each instance, " + numPills + " pills will be taken");
+			// now set the list for alarms
+			//TODO: change this preset!
+			String[] timeList = alarm.getTimeList();
+			//timeList[0] = alarm.getDefaultStartTime() + ":00";
+			if (timeList == null || timeList.length == 0)
+				Toast.makeText(this, "TimeList is null!", Toast.LENGTH_SHORT).show();
+			else	{
+				ListAdapter listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, timeList);
+				ListView listView = (ListView) findViewById(R.id.view_alarm_times);
+				listView.setAdapter(listAdapter);
+			}
+		}
+	}
+	    
 
 
 }

@@ -25,17 +25,17 @@ import android.widget.Toast;
 public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	
 	public static final String MEDICINE_NAME_KEY = "MEDICINE_NAME";
-	public static final String DAILY_FREQUENCY_KEY = "DAILY_FREQUENCY";
 	public static final String PILL_FREQUENCY_KEY = "PILL_FREQUENCY";
 	public static final String NUM_PILLS_KEY = "NUM_PILLS";
+	public static final String TIME_LIST_KEY = "TIME_LIST";
 	
 	private static String medicineName;
 	private static int pillFrequency;
-	private static boolean dailyFrequency;
 	private static int numPills;
 	private static int defaultStartTime;
 	private static int timePickerHour;
 	private static int timePickerMinute;
+	private static String[] timeList;
 
 	final public static String ONE_TIME = "onetime";
 	
@@ -46,26 +46,27 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	}
 	
 	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
-			boolean dailyFrequency, int numPills)	{
+			int numPills)	{
 		super();
 		AlarmManagerBroadcastReceiver.medicineName = medicineName;
 		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
-		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
 		AlarmManagerBroadcastReceiver.numPills = numPills;
 		AlarmManagerBroadcastReceiver.defaultStartTime = 8;
+
 	}
 	
 	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
-			boolean dailyFrequency, int numPills, int defaultStartTime)	{
+			int numPills, int defaultStartTime)	{
 		super();
 		AlarmManagerBroadcastReceiver.medicineName = medicineName;
 		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
-		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
 		AlarmManagerBroadcastReceiver.numPills = numPills;
 		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
 	}
 	
-	
+	/**
+	 * This function is called when the alarm broadcast receiver broadcasts that the alarm is going. 
+	 */
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// When this method is completed, the instance is deleted.
@@ -82,13 +83,15 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		// Must wire intent between notification activity and this
 		Intent intent2 = new Intent(context, NotificationActivity.class);
 		intent2.putExtra(MEDICINE_NAME_KEY, medicineName);
-		intent2.putExtra(DAILY_FREQUENCY_KEY, dailyFrequency);
 		intent2.putExtra(NUM_PILLS_KEY, numPills);
-		
+
+		String text = "You have a reminder set to take " + medicineName + 
+				" " + pillFrequency + " times per day. Take " + numPills + " now!";
+		intent2.putExtra(AlarmManagerActivity.NOTIFICATION_MESSAGE_KEY, text);
  		// Now create pending intent
  		PendingIntent pIntent = PendingIntent.getActivity(context, 0, intent2, 0);
 
- 		// Build notification
+ 		// Build notification 
  		// Actions are just fake
  		// For this, don't forget to set sounds, lights, vibration, etc.
  		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
@@ -162,12 +165,6 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	public void setMedicineName(String medicineName) {
 		AlarmManagerBroadcastReceiver.medicineName = medicineName;
 	}
-	public boolean getDailyFrequency() {
-		return dailyFrequency;
-	}
-	public void setDailyFrequency(boolean dailyFrequency) {
-		AlarmManagerBroadcastReceiver.dailyFrequency = dailyFrequency;
-	}
 	public int getNumPills() {
 		return numPills;
 	}
@@ -205,6 +202,14 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
 	public void setTimePickerMinute(int timePickerMinute) {
 		this.timePickerMinute = timePickerMinute;
+	}
+
+	public  String[] getTimeList() {
+		return timeList;
+	}
+
+	public  void setTimeList(String[] timeList) {
+		AlarmManagerBroadcastReceiver.timeList = timeList;
 	}
 
 	

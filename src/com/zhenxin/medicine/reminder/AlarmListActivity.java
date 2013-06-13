@@ -1,6 +1,12 @@
 package com.zhenxin.medicine.reminder;
 
-import android.app.Activity;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,11 +14,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
  
 public class AlarmListActivity extends ListActivity {
-	
-	public final static String TIME_LIST_KEY = "TIME_LIST";
-	
+		
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.alarm_list_layout);
@@ -22,37 +27,91 @@ public class AlarmListActivity extends ListActivity {
     }
     
     protected void onListItemClick(ListView l, View v, int position, long id) {
-    	// TODO: need to handle list item clicks, now it just all points to alarm manager
     	Intent intent = new Intent(this, AlarmViewActivity.class);
     	ListAdapter adapter = getListAdapter();
     	// Send over extra properties to the view class
     	String medicineName = (String) adapter.getItem(position);
-    	//AlarmManagerBroadcastReceiver alarm = getAlarmByPosition(position);
-    	// Now that we have alarm instance, populate the intent with its properties
+    	
+    	// Before we instantiate the alarm, we check the saved properties.
+    	String fileName = AlarmManagerActivity.SAVED_FILE_PREFIX + "_" + medicineName + ".dat";
+
+		FileInputStream fis = null;
+		String[] dataArray = null;
+    	try	{
+    		fis = openFileInput(fileName);
+    		BufferedReader r = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
+    		List<String> data = new ArrayList<String>();
+    		String line;
+    		while ((line = r.readLine()) != null)	{
+    			data.add(line);
+    		}
+    		dataArray = data.toArray(new String[]{});
+    		
+    	} catch (IOException ioex)	{
+    		// Catch if file doesn't exist;
+    	} finally {
+    		if (fis != null)
+				try {
+					fis.close();
+				} catch (IOException e) {
+				}
+    	}
+    	// We have the data in order of the following: medicineName, numPills, pillFreq, and timeList
+    	// Should create a function to read data, but organize for later
+    	// First check Medicine Name...necessary?
+    	//if (dataArray[0] != null || dataArray[0].length() != 0)
+    		
     	intent.putExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY, medicineName);
     	
     	//intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, alarm.getNumPills());
-    	int pillFrequency = 2;
-    	intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, pillFrequency);
-    	// Do a little bit of processing with the pill frequency
-    	// Algorithm: 8am initial time, partition day into 12/(n) intervals
-    	String [] reminderTimes = new String[pillFrequency];
-    	int defaultStartTime = 8;
-    	int interval;
-    	if (pillFrequency == 1)
-    		interval = 0;
+    	int numPills;
+    	if (dataArray != null && dataArray[1].length() !=0)
+    		numPills = Integer.parseInt(dataArray[1]);
     	else
-    		interval = 12/(reminderTimes.length-1);
-    	for (int i = 0; i < reminderTimes.length; i++)	{
-    		int temp = defaultStartTime + i*interval;
-    		reminderTimes[i] = temp + ":00";
+    		numPills = 2;
+    	intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, numPills);
+    	
+    	// Do the processing on the pillFrequency
+    	int pillFrequency;
+    	if (dataArray != null && dataArray[2].length() != 0)	
+    		pillFrequency = Integer.parseInt(dataArray[2]);
+    	else
+    		pillFrequency = 2;
+    	intent.putExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY, pillFrequency);
+    	
+    	//TODO: input timeList into the data!
+    	// Do a little bit of processing with the timeList
+    	String[] timeList;
+    	// checking null is a bit weird.
+    	if (dataArray != null && !dataArray[3].equals("null") && dataArray[3].length() != 0)	{
+    		//if 
+    		timeList = dataArray[3].split(",");
+    		//Toast.makeText(this.getApplicationContext(), "existing time list has been entered", Toast.LENGTH_LONG).show();
+    		Toast.makeText(getApplicationContext(), dataArray[3], Toast.LENGTH_LONG).show();
+    	} else	{
+	    	// Default Option!
+	    	// Algorithm: 8am initial time, partition day into 12/(n) intervals
+	    	timeList = new String[pillFrequency];
+	    	int defaultStartTime = 8;
+	    	int interval;
+	    	if (pillFrequency == 1)
+	    		interval = 0;
+	    	else
+	    		interval = 12/(timeList.length-1);
+	    	for (int i = 0; i < timeList.length; i++)	{
+	    		int temp = defaultStartTime + i*interval;
+	    		timeList[i] = temp + ":00";
+	    	}
+    		Toast.makeText(this.getApplicationContext(), "creating new list with default time as " + timeList[0], Toast.LENGTH_LONG).show();
+
     	}
-    	intent.putExtra(AlarmListActivity.TIME_LIST_KEY, reminderTimes);
+    	intent.putExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY, timeList);
+    	
+    	// now that we have set everything, start the activity! 
     	startActivity(intent);
     }
     
     private AlarmManagerBroadcastReceiver getAlarmByPosition(int position) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

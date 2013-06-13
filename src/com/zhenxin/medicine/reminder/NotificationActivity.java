@@ -21,9 +21,9 @@ public class NotificationActivity extends Activity {
 		String medicineName = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY);
 		int pillFrequency = intent.getIntExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY, 1);
 		int numPills = intent.getIntExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, 0);
-		
-		String text = "You have a reminder set to take " + medicineName + 
-				" " + pillFrequency + " times per day. Take " + numPills + " now!";
+		String text = intent.getStringExtra(AlarmManagerActivity.NOTIFICATION_MESSAGE_KEY);
+		//String text = "You have a reminder set to take " + medicineName + 
+		//		" " + pillFrequency + " times per day. Take " + numPills + " now!";
 		
 		textView.setText(text);
 		
