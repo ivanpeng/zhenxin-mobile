@@ -100,6 +100,8 @@ public class AlarmListActivity extends ListActivity {
 	    		interval = 12/(timeList.length-1);
 	    	for (int i = 0; i < timeList.length; i++)	{
 	    		int temp = defaultStartTime + i*interval;
+	    		if (temp > 24)
+	    			temp = temp -24;
 	    		timeList[i] = temp + ":00";
 	    	}
     		Toast.makeText(this.getApplicationContext(), "creating new list with default time as " + timeList[0], Toast.LENGTH_LONG).show();

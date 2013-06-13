@@ -1,6 +1,5 @@
 package com.zhenxin.medicine.reminder;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -152,9 +151,7 @@ public class AlarmManagerActivity extends Activity {
     				.append(alarm.getNumPills()).append("\n")
     				.append(alarm.getPillFrequency()).append("\n");
     		// Before we append the timeList, do some processing to get it into 1 line first
-    		
-    		//TODO: this is wrong! Need to do the processing again from AlarmListActivity to update the lists!
-    		String[] alarmTimes = new String[alarm.getPillFrequency()]; // where are we getting this?!?
+    		String[] alarmTimes = new String[alarm.getPillFrequency()]; 
 			int defaultHour = alarm.getTimePickerHour();
 			int defaultMin = alarm.getTimePickerMinute();
 			int interval;
@@ -164,6 +161,8 @@ public class AlarmManagerActivity extends Activity {
 				interval = 12 / (alarmTimes.length - 1);
 			for (int i = 0; i < alarmTimes.length; i++) {
 				int temp = defaultHour + i * interval;
+				if (temp > 24)
+					temp = temp - 24;
 				alarmTimes[i] = pad(temp) + ":" + pad(defaultMin);
 			}
 

@@ -80,6 +80,11 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 
 		Toast.makeText(context, "Alarm is going!", Toast.LENGTH_LONG).show();
 
+		//TODO: this is a placeholder to remind us that this may need to be removed.
+		String medicineName = intent.getStringExtra(MEDICINE_NAME_KEY);
+		int numPills = intent.getIntExtra(NUM_PILLS_KEY, -1);
+		int pillFrequency = intent.getIntExtra(PILL_FREQUENCY_KEY, -1);
+		
 		// Must wire intent between notification activity and this
 		Intent intent2 = new Intent(context, NotificationActivity.class);
 		intent2.putExtra(MEDICINE_NAME_KEY, medicineName);
@@ -97,7 +102,7 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
  		NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
  		builder.setContentIntent(pIntent)
  				.setTicker("Medicine Reminder!")
- 				.setContentTitle(AlarmManagerBroadcastReceiver.medicineName)
+ 				.setContentTitle(medicineName)
  				.setContentText("Take your pills!")
  				.setSmallIcon(R.drawable.alarm);
  		
@@ -127,12 +132,12 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         intent.putExtra(ONE_TIME, Boolean.FALSE);
+        // try putting intent extras here to send the message?
+        intent.putExtra(MEDICINE_NAME_KEY, medicineName);
+        intent.putExtra(NUM_PILLS_KEY, numPills);
+        intent.putExtra(PILL_FREQUENCY_KEY, pillFrequency);
         PendingIntent pi = PendingIntent.getBroadcast(context, whichAlarm, intent, 0);
-        //After after 30 seconds
-        //TODO: Do the frequency processing here
-        // When we have the dialog input here, modify this.
-        // First check if the time 
-        Calendar cal = Calendar.getInstance();
+        
         Calendar calAlarm = Calendar.getInstance();
         // month, day, and year already set from this; 
         calAlarm.set(Calendar.HOUR_OF_DAY, timePickerHour);
@@ -143,7 +148,6 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         	// the time has already passed; set calAlarm for next day, and get repeating
         	calAlarm.add(Calendar.DAY_OF_MONTH, 1);
         am.setRepeating(AlarmManager.RTC_WAKEUP, calAlarm.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
-        //am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 1000 * 5 , pi); 
     }
 
 	/**
