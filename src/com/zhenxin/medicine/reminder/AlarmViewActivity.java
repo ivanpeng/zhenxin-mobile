@@ -22,7 +22,7 @@ public class AlarmViewActivity extends Activity {
 
 	private boolean resumeHasRun = false;
 	// We can declare an instance of this alarm; just don't call setAlarm here and we'll be fine
-	private AlarmManagerBroadcastReceiver alarm;
+	private AlarmBroadcastReceiverWrapper alarms;
 	
 	
 	@Override
@@ -53,6 +53,8 @@ public class AlarmViewActivity extends Activity {
 			beginTime += interval; 
 		}
 		*/
+		final int timePickerHour = intent.getIntExtra(AlarmManagerBroadcastReceiver.TIME_PICKER_HOUR_KEY, 8);
+		final int timePickerMin = intent.getIntExtra(AlarmManagerBroadcastReceiver.TIME_PICKER_MIN_KEY, 0);
 		
 		final String[] timeList = intent.getStringArrayExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY);
 		if (timeList == null || timeList.length == 0)
@@ -62,8 +64,8 @@ public class AlarmViewActivity extends Activity {
 			ListView listView = (ListView) findViewById(R.id.view_alarm_times);
 			listView.setAdapter(listAdapter);
 		}
-		alarm = new AlarmManagerBroadcastReceiver(text, timeList.length, numPills, 8); // set to 8 for now, need to either set it in AlarmListActivity or parse from timeList
-		alarm.setTimeList(timeList);
+		final String positionCode = intent.getStringExtra(AlarmManagerActivity.ALARM_CODE_KEY);
+		alarms = new AlarmBroadcastReceiverWrapper(text, timeList.length, numPills, timeList, positionCode); // set to 8 for now, need to either set it in AlarmListActivity or parse from timeList
 		
 		
 		// Now set functionality to the buttons.
@@ -80,6 +82,10 @@ public class AlarmViewActivity extends Activity {
 				intent.putExtra(AlarmManagerBroadcastReceiver.NUM_PILLS_KEY, numPills);
 				intent.putExtra(AlarmManagerBroadcastReceiver.PILL_FREQUENCY_KEY,timeList.length);
 				intent.putExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY, timeList);
+				intent.putExtra(AlarmManagerBroadcastReceiver.TIME_PICKER_HOUR_KEY, timePickerHour);
+				intent.putExtra(AlarmManagerBroadcastReceiver.TIME_PICKER_MIN_KEY, timePickerMin);
+				intent.putExtra(AlarmManagerActivity.ALARM_CODE_KEY, positionCode);
+				
 				// should send default time start as well
 				context.startActivity(intent);
 			}
@@ -114,11 +120,11 @@ public class AlarmViewActivity extends Activity {
 	    }
 	    else	{
 			TextView numPillsView = (TextView) findViewById(R.id.view_num_pills);
-			int numPills = alarm.getNumPills();
+			int numPills = alarms.getNumPills();
 			numPillsView.setText("For each instance, " + numPills + " pills will be taken");
 			// now set the list for alarms
 			//TODO: change this preset!
-			String[] timeList = alarm.getTimeList();
+			String[] timeList = alarms.getTimeList();
 			//timeList[0] = alarm.getDefaultStartTime() + ":00";
 			if (timeList == null || timeList.length == 0)
 				Toast.makeText(this, "TimeList is null!", Toast.LENGTH_SHORT).show();

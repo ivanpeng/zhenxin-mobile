@@ -9,6 +9,7 @@ import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -22,21 +23,22 @@ import android.widget.Toast;
  * @author Ivan
  *
  */
+@SuppressWarnings("static-access")
 public class AlarmManagerActivity extends Activity {
 
-	private AlarmManagerBroadcastReceiver alarm;
+	private AlarmBroadcastReceiverWrapper alarms;
 	
 	private int hour;
 	private int minute;
 	static final int TIME_DIALOG_ID = 999;
 	public static final String NOTIFICATION_MESSAGE_KEY = "NOTIFICATION_MESSAGE";
 	public static final String SAVED_FILE_PREFIX = "zhenxin_alarms";
+	public static final String ALARM_CODE_KEY = "ALARM_CODE";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_manager);
-        alarm = new AlarmManagerBroadcastReceiver();
         // If this was started from clicking bottom, update the editText field 
         Intent intent = this.getIntent();
         String medicineName = "";
@@ -70,7 +72,9 @@ public class AlarmManagerActivity extends Activity {
 			}
 		});
         String[] timeList = intent.getStringArrayExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY);
-        alarm.setTimeList(timeList);
+        String positionCode = intent.getStringExtra(AlarmManagerActivity.ALARM_CODE_KEY);
+
+        alarms = new AlarmBroadcastReceiverWrapper(medicineName, pillFrequency, numPills, timeList, positionCode);
         
         
     }
@@ -84,12 +88,11 @@ public class AlarmManagerActivity extends Activity {
 				
 				@Override
 				public void onTimeSet(TimePicker view, int selectedHour, int selectedMinute) {
-					// TODO Auto-generated method stub
 					hour = selectedHour;
 					minute = selectedMinute;
-					if (alarm != null)	{
-						alarm.setTimePickerHour(hour);
-						alarm.setTimePickerMinute(minute);
+					if (alarms != null)	{
+						alarms.setTimePickerHour(hour);
+						alarms.setTimePickerMinute(minute);
 					}
 
 			        // Edit custom changing message
@@ -98,21 +101,21 @@ public class AlarmManagerActivity extends Activity {
 			        String ampm;
 			        if (hour == 0)	{
 			        	ampm = "am";
-			        	hour12 = alarm.getTimePickerHour()+12;
+			        	hour12 = alarms.getTimePickerHour()+12;
 			        }
 			        else if (hour <= 12)	{
 			        	if (hour == 12)
 			        		ampm = "pm";
 			        	else
 			        		ampm = "am";
-			        	hour12 = alarm.getTimePickerHour();
+			        	hour12 = alarms.getTimePickerHour();
 			        } else	{
 			        	ampm = "pm";
-			        	hour12 = alarm.getTimePickerHour() - 12;
+			        	hour12 = alarms.getTimePickerHour() - 12;
 			        }
-			        defaultMessage.setText("The alarm time is set to " + pad(hour12) + ":" + pad(alarm.getTimePickerMinute()) + " " + ampm + ". Press to change.");
+			        defaultMessage.setText("The alarm time is set to " + pad(hour12) + ":" + pad(alarms.getTimePickerMinute()) + " " + ampm + ". Press to change.");
 
-					alarm.setDefaultStartTime(hour);
+					alarms.setDefaultStartTime(hour);
 				}
 			}, hour, minute,true);
 		}
@@ -130,32 +133,31 @@ public class AlarmManagerActivity extends Activity {
      * This function is started by the button press of Start Alarm in activity_alarm_manager
      * @param view
      */
-    public void startRepeatingTimer(View view) {
+	public void startRepeatingTimer(View view) {
     	Context context = this.getApplicationContext();
-    	if(alarm != null){
+    	if(alarms != null){
     		// Set complementary properties
             EditText medicineName = (EditText) findViewById(R.id.medicine_name);
-            alarm.setMedicineName(medicineName.getText().toString());
+            alarms.setMedicineName(medicineName.getText().toString());
             EditText pillFrequency = (EditText) findViewById(R.id.pill_frequency);
-            alarm.setPillFrequency(Integer.parseInt(pillFrequency.getText().toString()));
+            alarms.setPillFrequency(Integer.parseInt(pillFrequency.getText().toString()));
             EditText numPills = (EditText) findViewById(R.id.num_pills_check);
-            alarm.setNumPills(Integer.parseInt(numPills.getText().toString()));
-            alarm.setTimePickerHour(hour);
-            alarm.setTimePickerMinute(minute);
-    		alarm.SetAlarm(context,0);
-    		Toast.makeText(context, "Alarm is set for " + pad(hour) + ":" + pad(minute), Toast.LENGTH_LONG).show();
+            alarms.setNumPills(Integer.parseInt(numPills.getText().toString()));
+            alarms.setTimePickerHour(hour);
+            alarms.setTimePickerMinute(minute);
     		
-    		String fileName = AlarmManagerActivity.SAVED_FILE_PREFIX + "_" + alarm.getMedicineName() + ".dat";
+    		String fileName = AlarmManagerActivity.SAVED_FILE_PREFIX + "_" + alarms.getMedicineName() + ".dat";
     		StringBuilder savedData = new StringBuilder();
-    		savedData.append(alarm.getMedicineName()).append("\n")
-    				.append(alarm.getNumPills()).append("\n")
-    				.append(alarm.getPillFrequency()).append("\n");
+    		savedData.append(alarms.getMedicineName()).append("\n")
+    				.append(alarms.getNumPills()).append("\n")
+    				.append(alarms.getPillFrequency()).append("\n");
     		// Before we append the timeList, do some processing to get it into 1 line first
-    		String[] alarmTimes = new String[alarm.getPillFrequency()]; 
-			int defaultHour = alarm.getTimePickerHour();
-			int defaultMin = alarm.getTimePickerMinute();
+    		String[] alarmTimes = new String[alarms.getPillFrequency()]; 
+			int defaultHour = alarms.getTimePickerHour();
+			int defaultMin = alarms.getTimePickerMinute();
 			int interval;
-			if (alarm.getPillFrequency() == 1)
+			//TODO: add check if interval is not exactly 4 hours...
+			if (alarms.getPillFrequency() == 1)
 				interval = 0;
 			else
 				interval = 12 / (alarmTimes.length - 1);
@@ -166,10 +168,25 @@ public class AlarmManagerActivity extends Activity {
 				alarmTimes[i] = pad(temp) + ":" + pad(defaultMin);
 			}
 
-			alarm.setTimeList(alarmTimes);
+			alarms.setTimeList(alarmTimes);
+
+    		
+			// Now that all properties are set, we register the receivers. Do
+			// some manipulation with the whichAlarm parameter
+            // the position code variable never changes, so we don't need to modify it.
+            alarms.SetAlarm(context,alarms.getPositionCode());
+            
+            // Register alarms, declare intent filter first
+            IntentFilter filter = new IntentFilter();
+            for (AlarmManagerBroadcastReceiver alarm :alarms.getAlarms())	{
+            	registerReceiver(alarm, filter);
+            }
+			
 			// Now set the times in string 
 			String times = AlarmManagerActivity.arrayToAlarmListString(alarmTimes);
     		savedData.append(times).append("\n"); // Writing the timeList might be a bit problematic; check with a JUnit test!
+    		// now append the alarm code.
+    		savedData.append(alarms.getPositionCode());
     		FileOutputStream fos = null;
     		try	{
     			fos = openFileOutput(fileName, Context.MODE_PRIVATE);
@@ -186,7 +203,8 @@ public class AlarmManagerActivity extends Activity {
 					}
     			
     		}
-    		
+
+    		Toast.makeText(context, "Alarm times: " + times + " with position code " + alarms.getPositionCode(), Toast.LENGTH_LONG).show();
 
             
     	}else{
@@ -206,8 +224,8 @@ public class AlarmManagerActivity extends Activity {
 
 	public void cancelRepeatingTimer(View view){
     	Context context = this.getApplicationContext();
-    	if(alarm != null){
-    		alarm.CancelAlarm(context,0);
+    	if(alarms != null){
+    		alarms.CancelAlarm(context,alarms.getPositionCode());
     	}else{
     		Toast.makeText(context, "Alarm is null", Toast.LENGTH_SHORT).show();
     	}
@@ -227,7 +245,7 @@ public class AlarmManagerActivity extends Activity {
         return true;
     }
 
-	private static String pad(int c) {
+	public static String pad(int c) {
 		if (c >= 10)
 		   return String.valueOf(c);
 		else

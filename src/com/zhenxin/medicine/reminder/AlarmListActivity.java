@@ -109,6 +109,13 @@ public class AlarmListActivity extends ListActivity {
     	}
     	intent.putExtra(AlarmManagerBroadcastReceiver.TIME_LIST_KEY, timeList);
     	
+    	//Now grab the last line; this describes the position, which will be used in coding the alarmCode.
+    	if (dataArray != null && dataArray[4] != null && dataArray[4].length() != 0)	{
+    		intent.putExtra(AlarmManagerActivity.ALARM_CODE_KEY, String.valueOf(dataArray[4]));
+    	} else	{
+    		intent.putExtra(AlarmManagerActivity.ALARM_CODE_KEY, String.valueOf(position));
+    	}
+    	
     	// now that we have set everything, start the activity! 
     	startActivity(intent);
     }
