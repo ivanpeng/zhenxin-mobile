@@ -62,7 +62,7 @@ public class AlarmBroadcastReceiverWrapper {
 		// We also know how many times this is called, based off the other
 		// properties, so all we need to do is set a loop going with set alarm
 		
-		for (int i = 0; i < alarms.size(); i++)	{
+		for (int i = 0; i < pillFrequency; i++)	{
 			// First set code
 			StringBuilder sb = new StringBuilder();
 			sb.append(positionCode).append(AlarmManagerActivity.pad(i+1));
@@ -91,7 +91,7 @@ public class AlarmBroadcastReceiverWrapper {
 	        	// the time has already passed; set calAlarm for next day, and get repeating
 	        	calAlarm.add(Calendar.DAY_OF_MONTH, 1);
 	        
-			alarm.SetAlarm(context, Integer.parseInt(sb.toString()), calAlarm.getTimeInMillis());
+			alarm.SetAlarm(context, Integer.parseInt(sb.toString()), calAlarm.getTimeInMillis(), this);
 
 	        //After all this, put alarm down
 	        alarms.add(alarm);
@@ -107,7 +107,7 @@ public class AlarmBroadcastReceiverWrapper {
 	 * @param positionCode
 	 */
 	public void CancelAlarm(Context context, String positionCode) {
-		for (int i = 0; i < alarms.size(); i++)	{
+		for (int i = 0; i < pillFrequency; i++)	{
 			// First set code
 			StringBuilder sb = new StringBuilder();
 			sb.append(positionCode).append(AlarmManagerActivity.pad(i+1));

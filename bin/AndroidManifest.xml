@@ -28,6 +28,11 @@
         </activity>
         <!-- Broadcast receiver -->
         <receiver android:name="com.zhenxin.medicine.reminder.AlarmManagerBroadcastReceiver" >
+            <intent-filter> 
+                <action android:name="android.intent.action.BOOT_COMPLETED" /> 
+                <action android:name="android.intent.action.TIME_SET" /> 
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+            </intent-filter>
         </receiver>
 
         <activity

@@ -103,17 +103,16 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	 * @param context
 	 * @param whichAlarm
 	 */
-	public void SetAlarm(Context context, int whichAlarm, long timeInMillis)
+	public void SetAlarm(Context context, int whichAlarm, long timeInMillis, AlarmBroadcastReceiverWrapper data)
     {
         AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         intent.putExtra(ONE_TIME, Boolean.FALSE);
         // try putting intent extras here to send the message?
         // TODO: fix!
-        Intent tempIntent = ((Activity)context).getIntent();
-        intent.putExtra(MEDICINE_NAME_KEY, tempIntent.getStringExtra(MEDICINE_NAME_KEY));
-        intent.putExtra(NUM_PILLS_KEY, tempIntent.getIntExtra(NUM_PILLS_KEY, -1));
-        intent.putExtra(PILL_FREQUENCY_KEY, tempIntent.getIntExtra(PILL_FREQUENCY_KEY, -1));
+        intent.putExtra(MEDICINE_NAME_KEY, data.getMedicineName());
+        intent.putExtra(NUM_PILLS_KEY, data.getNumPills());
+        intent.putExtra(PILL_FREQUENCY_KEY, data.getPillFrequency());
         PendingIntent pi = PendingIntent.getBroadcast(context, whichAlarm, intent, 0);
 
         am.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, pi);

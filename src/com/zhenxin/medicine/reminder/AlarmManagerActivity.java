@@ -26,7 +26,7 @@ import android.widget.Toast;
 @SuppressWarnings("static-access")
 public class AlarmManagerActivity extends Activity {
 
-	private AlarmBroadcastReceiverWrapper alarms;
+	private static AlarmBroadcastReceiverWrapper alarms;
 	
 	private int hour;
 	private int minute;
@@ -177,10 +177,10 @@ public class AlarmManagerActivity extends Activity {
             alarms.SetAlarm(context,alarms.getPositionCode());
             
             // Register alarms, declare intent filter first
-            IntentFilter filter = new IntentFilter();
-            for (AlarmManagerBroadcastReceiver alarm :alarms.getAlarms())	{
-            	registerReceiver(alarm, filter);
-            }
+            //IntentFilter filter = new IntentFilter();
+            //for (AlarmManagerBroadcastReceiver alarm :alarms.getAlarms())	{
+            //	registerReceiver(alarm, filter);
+            //}
 			
 			// Now set the times in string 
 			String times = AlarmManagerActivity.arrayToAlarmListString(alarmTimes);
