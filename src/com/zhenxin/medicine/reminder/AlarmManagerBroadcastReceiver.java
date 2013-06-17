@@ -2,6 +2,7 @@ package com.zhenxin.medicine.reminder;
 
 import java.util.Calendar;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -27,43 +28,17 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	public static final String MEDICINE_NAME_KEY = "MEDICINE_NAME";
 	public static final String PILL_FREQUENCY_KEY = "PILL_FREQUENCY";
 	public static final String NUM_PILLS_KEY = "NUM_PILLS";
+	public static final String TIME_PICKER_HOUR_KEY = "TIME_PICKER_HOUR";
+	public static final String TIME_PICKER_MIN_KEY = "TIME_PICKER_MIN";
 	public static final String TIME_LIST_KEY = "TIME_LIST";
-	
-	private static String medicineName;
-	private static int pillFrequency;
-	private static int numPills;
-	private static int defaultStartTime;
-	private static int timePickerHour;
-	private static int timePickerMinute;
-	private static String[] timeList;
 
 	final public static String ONE_TIME = "onetime";
 	
 	public AlarmManagerBroadcastReceiver ()	{
 		super();
-		AlarmManagerBroadcastReceiver.defaultStartTime = 8;
 
 	}
-	
-	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
-			int numPills)	{
-		super();
-		AlarmManagerBroadcastReceiver.medicineName = medicineName;
-		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
-		AlarmManagerBroadcastReceiver.numPills = numPills;
-		AlarmManagerBroadcastReceiver.defaultStartTime = 8;
 
-	}
-	
-	public AlarmManagerBroadcastReceiver (String medicineName, int pillFrequency,
-			int numPills, int defaultStartTime)	{
-		super();
-		AlarmManagerBroadcastReceiver.medicineName = medicineName;
-		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
-		AlarmManagerBroadcastReceiver.numPills = numPills;
-		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
-	}
-	
 	/**
 	 * This function is called when the alarm broadcast receiver broadcasts that the alarm is going. 
 	 */
@@ -84,6 +59,7 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 		String medicineName = intent.getStringExtra(MEDICINE_NAME_KEY);
 		int numPills = intent.getIntExtra(NUM_PILLS_KEY, -1);
 		int pillFrequency = intent.getIntExtra(PILL_FREQUENCY_KEY, -1);
+		String alarmCode = intent.getStringExtra(AlarmManagerActivity.ALARM_CODE_KEY);
 		
 		// Must wire intent between notification activity and this
 		Intent intent2 = new Intent(context, NotificationActivity.class);
@@ -127,27 +103,19 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
 	 * @param context
 	 * @param whichAlarm
 	 */
-	public void SetAlarm(Context context, int whichAlarm)
+	public void SetAlarm(Context context, int whichAlarm, long timeInMillis, AlarmBroadcastReceiverWrapper data)
     {
         AlarmManager am=(AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, AlarmManagerBroadcastReceiver.class);
         intent.putExtra(ONE_TIME, Boolean.FALSE);
         // try putting intent extras here to send the message?
-        intent.putExtra(MEDICINE_NAME_KEY, medicineName);
-        intent.putExtra(NUM_PILLS_KEY, numPills);
-        intent.putExtra(PILL_FREQUENCY_KEY, pillFrequency);
+        // TODO: fix!
+        intent.putExtra(MEDICINE_NAME_KEY, data.getMedicineName());
+        intent.putExtra(NUM_PILLS_KEY, data.getNumPills());
+        intent.putExtra(PILL_FREQUENCY_KEY, data.getPillFrequency());
         PendingIntent pi = PendingIntent.getBroadcast(context, whichAlarm, intent, 0);
-        
-        Calendar calAlarm = Calendar.getInstance();
-        // month, day, and year already set from this; 
-        calAlarm.set(Calendar.HOUR_OF_DAY, timePickerHour);
-        calAlarm.set(Calendar.MINUTE, timePickerMinute);
-        calAlarm.set(Calendar.SECOND, 0);
-        long triggerTime = System.currentTimeMillis() -  calAlarm.getTimeInMillis();
-        if (triggerTime > 0)
-        	// the time has already passed; set calAlarm for next day, and get repeating
-        	calAlarm.add(Calendar.DAY_OF_MONTH, 1);
-        am.setRepeating(AlarmManager.RTC_WAKEUP, calAlarm.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pi);
+
+        am.setRepeating(AlarmManager.RTC_WAKEUP, timeInMillis, AlarmManager.INTERVAL_DAY, pi);
     }
 
 	/**
@@ -162,60 +130,5 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(sender);
     }
-    
-	public String getMedicineName() {
-		return medicineName;
-	}
-	public void setMedicineName(String medicineName) {
-		AlarmManagerBroadcastReceiver.medicineName = medicineName;
-	}
-	public int getNumPills() {
-		return numPills;
-	}
-	public void setNumPills(int numPills) {
-		AlarmManagerBroadcastReceiver.numPills = numPills;
-	}
-
-	public int getPillFrequency() {
-		return pillFrequency;
-	}
-
-	public void setPillFrequency(int pillFrequency) {
-		AlarmManagerBroadcastReceiver.pillFrequency = pillFrequency;
-	}
-
-	public int getDefaultStartTime() {
-		return defaultStartTime;
-	}
-
-	public void setDefaultStartTime(int defaultStartTime) {
-		AlarmManagerBroadcastReceiver.defaultStartTime = defaultStartTime;
-	}
-
-	public int getTimePickerHour() {
-		return timePickerHour;
-	}
-
-	public void setTimePickerHour(int timePickerHour) {
-		this.timePickerHour = timePickerHour;
-	}
-
-	public int getTimePickerMinute() {
-		return timePickerMinute;
-	}
-
-	public void setTimePickerMinute(int timePickerMinute) {
-		this.timePickerMinute = timePickerMinute;
-	}
-
-	public  String[] getTimeList() {
-		return timeList;
-	}
-
-	public  void setTimeList(String[] timeList) {
-		AlarmManagerBroadcastReceiver.timeList = timeList;
-	}
-
-	
 
 }
