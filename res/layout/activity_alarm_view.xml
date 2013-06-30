@@ -47,6 +47,11 @@
 	        android:layout_width="150dp"
 	        android:layout_height="wrap_content"
 	        android:text="Cancel" />
+	    <Button android:id="@+id/view_remove_alarm"
+	        android:layout_width="150dp"
+	        android:layout_height="wrap_content"
+	        android:text="Remove Alarm"
+	        android:onClick="removeAlarmView" />
 	
 	</LinearLayout>
 </ScrollView>

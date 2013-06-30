@@ -135,7 +135,10 @@ public class AlarmViewActivity extends Activity {
 			}
 		}
 	}
-	    
+	
+	public void removeAlarmView(View view)	{
+		// This is the class to remove the alarm. Delete the file and update list from previous page
+	}
 
 
 }

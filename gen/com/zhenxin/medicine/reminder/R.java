@@ -31,28 +31,29 @@ public final class R {
         public static final int zx_logo=0x7f020007;
     }
     public static final class id {
-        public static final int ScanButton=0x7f080014;
-        public static final int action_settings=0x7f080015;
+        public static final int ScanButton=0x7f080015;
+        public static final int action_settings=0x7f080016;
         public static final int alarm_edit_default_time=0x7f080004;
         public static final int btCancel=0x7f080009;
         public static final int btEnd=0x7f08000a;
         public static final int btStart=0x7f080008;
-        public static final int cameraPreview=0x7f080012;
+        public static final int cameraPreview=0x7f080013;
         public static final int medicine_name=0x7f080000;
         public static final int num_pills_check=0x7f080007;
         public static final int num_pills_text=0x7f080006;
         public static final int pill_frequency=0x7f080002;
         public static final int pill_frequency_text=0x7f080001;
         public static final int pill_frequency_time_selector=0x7f080005;
-        public static final int returnbutton=0x7f080011;
-        public static final int scanText=0x7f080013;
+        public static final int returnbutton=0x7f080012;
+        public static final int scanText=0x7f080014;
         public static final int textView1=0x7f080003;
-        public static final int textview1=0x7f080010;
+        public static final int textview1=0x7f080011;
         public static final int view_alarm_times=0x7f08000d;
         public static final int view_cancel_alarm=0x7f08000f;
         public static final int view_edit_alarm=0x7f08000e;
         public static final int view_medicine_name=0x7f08000b;
         public static final int view_num_pills=0x7f08000c;
+        public static final int view_remove_alarm=0x7f080010;
     }
     public static final class layout {
         public static final int activity_alarm_manager=0x7f030000;

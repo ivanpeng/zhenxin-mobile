@@ -27,6 +27,7 @@ import android.widget.Toast;
 public class AlarmManagerActivity extends Activity {
 
 	private static AlarmBroadcastReceiverWrapper alarms;
+	private static boolean isNew;
 	
 	private int hour;
 	private int minute;
@@ -42,8 +43,8 @@ public class AlarmManagerActivity extends Activity {
         // If this was started from clicking bottom, update the editText field 
         Intent intent = this.getIntent();
         String medicineName = "";
-        int numPills = 2;
-        int pillFrequency = 2;
+        int numPills;
+        int pillFrequency;
         // if there is a value
         if (intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY) != null)	{
         	medicineName = intent.getStringExtra(AlarmManagerBroadcastReceiver.MEDICINE_NAME_KEY);
@@ -75,6 +76,7 @@ public class AlarmManagerActivity extends Activity {
         String positionCode = intent.getStringExtra(AlarmManagerActivity.ALARM_CODE_KEY);
 
         alarms = new AlarmBroadcastReceiverWrapper(medicineName, pillFrequency, numPills, timeList, positionCode);
+        isNew = intent.getBooleanExtra(AlarmListActivity.IS_NEW_ALARM_KEY, false);
         
         
     }
@@ -202,6 +204,23 @@ public class AlarmManagerActivity extends Activity {
 					} catch (IOException e) {
 					}
     			
+    		}
+    		// Should also write to the master file if this is a new list
+    		if(isNew)	{
+    			String masterFile = AlarmManagerActivity.SAVED_FILE_PREFIX + "_master.dat";
+    			FileOutputStream fos2 = null;
+    			try	{
+    				fos2 = openFileOutput(masterFile, Context.MODE_APPEND);
+    				//TODO: write file here 
+    				
+    			} catch (IOException ioex)	{
+    				Toast.makeText(context, "Writing list of drugs not successful!", Toast.LENGTH_LONG).show();
+    			} finally	{
+    				if (fos2 != null)
+    					try	{
+    						fos2.close();
+    					} catch (IOException e){}
+    			}
     		}
 
     		Toast.makeText(context, "Alarm times: " + times + " with position code " + alarms.getPositionCode(), Toast.LENGTH_LONG).show();
