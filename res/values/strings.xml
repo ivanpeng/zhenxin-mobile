@@ -19,5 +19,9 @@
     <string name="title_activity_alarm_view">Alarm View</string>
     <string name="default_alarm_time_text">The alarm default time is set to 8 am. Press to change.</string>
     <string name="change_alarm_button_text">Change Default Time</string>
+    <string name="title_activity_qr_scanned">QR Code Received</string>
+    <string name="db_connection_string">DB Connection info here</string>
+    <string name="qr_text">This is the QR Code.</string>
+    <string name="title_activity_display_product">Product Information</string>
 
 </resources>

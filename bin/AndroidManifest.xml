@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.zhenxin.medicine.reminder"
+    package="com.zhenxin.medicine"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -40,7 +40,7 @@
             android:label="@string/title_activity_notification" >
         </activity>
         <activity
-            android:name="com.zhenxin.medicine.reminder.MainActivity"
+            android:name="com.zhenxin.medicine.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -49,14 +49,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.zhenxin.medicine.reminder.CameraTestActivity"
+            android:name="com.zhenxin.medicine.camera.CameraTestActivity"
             android:label="@string/app_name" >
         </activity>
         <activity android:name="com.zhenxin.medicine.reminder.AlarmListActivity" />
-        <activity android:name="com.zhenxin.medicine.reminder.ScannerActivity" />
-        <activity android:name="com.zhenxin.medicine.reminder.SocialActivity" />
-        <activity
-            android:name="com.zhenxin.medicine.reminder.AlarmViewActivity"
+        <activity android:name="com.zhenxin.medicine.camera.ScannerActivity" />
+        <activity android:name="com.zhenxin.medicine.contacts.SocialActivity" />
+        <activity android:name="com.zhenxin.medicine.reminder.AlarmViewActivity"
             android:label="@string/title_activity_alarm_view" >
         </activity>
     </application>
