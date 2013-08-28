@@ -31,6 +31,7 @@ import com.zhenxin.medicine.R;
 /* Import ZBar Class files */
 
 /**
+ * @deprecated
  * This is defunct! Don't change this one! Use ScannerActivity
  * 
  *
