@@ -1,7 +1,7 @@
 package com.zhenxin.medicine.camera;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import net.sourceforge.zbar.Symbol;
 import net.sourceforge.zbar.SymbolSet;
 
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import android.app.Activity;
@@ -22,6 +22,7 @@ import android.hardware.Camera;
 import android.hardware.Camera.AutoFocusCallback;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -30,6 +31,9 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zhenxin.medicine.R;
 /* Import ZBar Class files */
 
@@ -159,35 +163,8 @@ public class ScannerActivity extends Activity
                     
                     SymbolSet syms = scanner.getResults();
                     for (Symbol sym : syms) {
-                    	// This is where we change the results!
-                    	MappingJacksonHttpMessageConverter messageConverter = new MappingJacksonHttpMessageConverter();
-                    	List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-                    	messageConverters.add(messageConverter);
-                    	RestTemplate restTemplate = new RestTemplate();
-                    	restTemplate.setMessageConverters(messageConverters);
-                    	// Now that the http rest request template is functional, we validate the URL and then do a call
-                    	try {
-							URL u = new URL(sym.getData());
-							// Possible Hashmap use?
-							ProductItem item = restTemplate.getForObject(u.toURI(), ProductItem.class);
-							
-							if (item == null)
-								throw new InvalidatedException("Invalid item for " + item.getSerialCode());
-	                        scanText.setText("Valid item with barcode " + sym.getData());
-	                        barcodeScanned = true;
-						} catch (MalformedURLException e) {
-							// Not valid URL!
-							// Here we don't need to do anything; just need to skip this URL
-							scanText.setText("Invalid URL; try scanning again.");
-						} catch (URISyntaxException e) {
-							// Improper syntax in URI!
-							scanText.setText("Improper syntax for URL; scan again");
-						} catch (InvalidatedException iex)	{
-							// Invalid exception
-							scanText.setText(iex.getMessage());
-							barcodeScanned = true;
-						}
-                    	
+                    	// Call the asynchronous task for scanning
+                    	new ValidateCodeTask().execute(sym.getData());
                     }
                 }
             }
@@ -199,4 +176,59 @@ public class ScannerActivity extends Activity
                 autoFocusHandler.postDelayed(doAutoFocus, 1000);
             }
         };
+    
+    class ValidateCodeTask extends AsyncTask<String, Void, ProductItem> {
+
+		@Override
+		protected ProductItem doInBackground(String... params) {
+			ProductItem item;
+        	// This is where we change the results!
+        	//MappingJackson2HttpMessageConverter messageConverter = new MappingJackson2HttpMessageConverter();
+        	List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+        	//messageConverters.add(messageConverter);
+        	messageConverters.add(new StringHttpMessageConverter());
+        	RestTemplate restTemplate = new RestTemplate();
+        	restTemplate.setMessageConverters(messageConverters);
+        	
+        	// Now that the http rest request template is functional, we validate the URL and then do a call
+        	try {
+				URL u = new URL(params[0]);
+				// Possible Hashmap use?
+				//ProductItem item = restTemplate.getForObject(u.toURI(), ProductItem.class);
+				ObjectMapper objMapper = new ObjectMapper();
+				item = objMapper.readValue(u, ProductItem.class);
+				barcodeScanned = true;
+			} catch (MalformedURLException e) {
+				// Not valid URL!
+				// Here we don't need to do anything; just need to skip this URL
+				item = ProductItem.generateDefault();
+			} catch (JsonParseException e) {
+				//TODO: record phone, IP Address, etc. here
+				barcodeScanned = true;
+				item = ProductItem.generateDefault();
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				item = ProductItem.generateDefault();
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				item = ProductItem.generateDefault();
+			}
+			return item;
+		}
+
+		@Override
+		protected void onPostExecute(ProductItem result) {
+			super.onPostExecute(result);
+			// TODO: should move the scantext stuff here.
+			if (result.getProductKey() != -1)	{
+				scanText.setText("Scanned item " + result.getSerialCode());
+			} else
+				scanText.setText("Invalid item! This is a fake!");
+		}
+
+    	
+    }
 }
